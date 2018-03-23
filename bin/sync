@@ -1,37 +1,6 @@
 #!/bin/bash
 #
-# This script performs a two-way sync on the development webserver back down to the local machine
-# This script will not work properly unless you have the following things setup:
-#
-# 1) Your SSH config
-#
-#       You will need a host entry of "cspadev" in your `~/.ssh/config` file that references the
-#       dev machine and the correct user.
-#
-# 2) Dev server code directory
-#
-#       Your code on the dev machine must be located at ~/repos/cspa.
-#
-#
-# Usage:
-#
-#   $ ./devsync [up|down]
-#
-# Arguments:
-#
-#   The script takes a single optional argument, the direction of file preference.  This defaults to
-#   "up".
-#
-#       The two-way sync of the script only updates files on the destinations when the local is newer.
-#       However, this is imperfect with deleted files as it is impossible to determine whether the
-#       deletion on the origin is "newer" than the existence of a file on the destination or vice versa.
-#       Specifying the "up" or "down" direction give precedence to that upload direction.
-#
-#       For example, if a new file was created on the remote through a build script, running `bin/devsync`
-#       in "up" mode would result in the deletion of that file, because by default the process uploads
-#       first, treating the local as a source of truth for new files.  To fix this, run `bin/devsync down`
-#       to specify that the download should occur first, treating the remote as the resource of truth
-#       for new files.
+# This is a convenience script I use for uploading code to the test environment
 #
 set -e
 
@@ -62,8 +31,6 @@ COMMON_OPTIONS="--progress \
   --exclude .idea \
   --exclude .DS_Store \
   --exclude node_modules \
-  --exclude lambda/runtime \
-  --exclude public/js/dev
   "
 
 UPLOAD="rsync -avu $LOCAL_DIR. $REMOTE_DIR \
