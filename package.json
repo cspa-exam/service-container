@@ -1,6 +1,6 @@
 {
   "name": "service-container",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An inversion of control service container for Javascript",
   "main": "index.js",
   "scripts": {
