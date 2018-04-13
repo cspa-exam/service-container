@@ -64,6 +64,18 @@ describe('ServiceContainer', function() {
     expect(container.getServiceIds()).to.deep.equal(['a', 'b', 'c']);
   });
 
+  it('should be able to return a list of all service ids including aliases', function() {
+    const container = new ServiceContainer();
+
+    container.set('a', 1);
+    container.set('b', 2);
+    container.set('c', 3);
+    container.alias('d', 'a');
+
+    expect(container.getServiceIds()).to.deep.equal(['a', 'b', 'c', 'd']);
+  });
+
+
   it('should recommend to you some other service ids when you misspell one', function() {
     const container = new ServiceContainer();
 
