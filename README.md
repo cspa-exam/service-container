@@ -320,18 +320,6 @@ service_container.compile(); // Yay!
 Not all cases will be this simple but you get the idea.
 
 
-## Including the Service Container
-In client application code, to use the service container simply require the [container.js](../services/container.js)
-file.
-
-`routes/controller.js`
-```javascript
-const service_container = require('../service/container');
-```
-
-Typically, client application code will include controllers, scripts, or other application entry points.
-
-
 ## Fetching a Service
 Once you have required the service container, use the `get()` method to fetch the service.
 
@@ -352,3 +340,103 @@ const {
   HelloWorld,
 } = service_container.getAll(['DogeService', 'HelloWorld']);
 ```
+
+
+## Even Easier way of Registering Services
+The JsonLoader is an alternate method of configuring services in your container. It trades a reduced featureset 
+in favor of a more simplified, easy-to-use syntax:
+
+`./services/container.js`
+```javascript
+'use strict';
+const { JsonLoader } = require('service-container');
+ 
+const loader = new JsonLoader(service_container);
+loader.load(require('../config/services.json.js'));
+```
+
+`./services/config/services.json.js`
+```javascript
+module.exports = {
+  service_id_1: require('./ClassA'),
+  service_id_2: {
+    constructor: require('./ClassB'),
+    tags: [ 'buz' ],
+  },
+  service_id_3: {
+    constructor: require('./ClassC'),
+    autowire: false,
+    args: [ 'foo', 'bar', '@service_id_2' ],
+  },
+  alias_1: '@service_id_1',
+};
+```
+
+The above would be analogous to:
+
+```javascript
+service_container.autowire('service_id_1', require('./ClassA'));
+ 
+service_container.autowire('service_id_2', require('./ClassB'))
+  .addTag('buz');
+ 
+service_container.register('service_id_3', require('./ClassC'))
+  .setArguments([ 'foo', 'bar', new ServiceReference('service_id_2') ]);
+ 
+service_container.alias('alias_1', 'service_id_1');
+```
+
+But is less wordy!
+
+
+## Including the Service Container in your Application
+The service container should be a singletoe in your Javascript application, and thus it is recommended to house
+a single container in a node module, for example:
+
+`./services/container.js`
+```javascript
+'use strict';
+const { ServiceContainer, FactoryLoader, JsonLoader } = require('service-container');
+ 
+const service_container = new ServiceContainer();
+const loader = new FactoryLoader(service_container);
+ 
+loader.load(require('../config/services.js'));
+// jsonloader.load(require('../config/services.json.js'));
+ 
+service_container.compile(); // Optional but highly recommended
+ 
+module.exports = service_container;
+```
+
+Then in any of your application files, you can employ one of two approaches:
+
+### Include the module singleton
+
+`routes/controller.js`
+```javascript
+const service_container = require('../service/container');
+ 
+// ... your code here
+```
+
+This is simple to use and is recommended for typical javascript applications that are not ready for...
+
+
+### Have the module be your application backbone  
+Instead of including the `service-container` in your application, you use the `service-container` to deploy
+the entirety of your application. For a NodeJS/ExpressJS example, your `index.js` would be rewritten to look
+like this:
+
+`index.js`
+```javascript
+'use strict';
+ 
+const container = require('./service/container');
+ 
+container.get('express.server').start();
+```
+
+This method requires significant re-thinking of how the application is laid out. The `service-container`'s 
+philosophy recommends this as the "ultimate goal". At this point, all aspects of your application are properly
+dependency-injected, and thus all aspects of your application can be isolated and tested!... probably. 

@@ -222,5 +222,4 @@ describe('JsonLoader', function() {
       expect(container.get('service_d').getC().getB().woof()).to.equal('woof');
     });
   });
-
 });
