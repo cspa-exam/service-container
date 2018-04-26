@@ -61,7 +61,7 @@ describe('ServiceContainer', function() {
     container.set('b', 2);
     container.set('c', 3);
 
-    expect(container.getServiceIds()).to.deep.equal(['a', 'b', 'c']);
+    expect(container.getServiceIds()).to.deep.equal(['service_container', 'a', 'b', 'c']);
   });
 
   it('should be able to return a list of all service ids including aliases', function() {
@@ -72,7 +72,7 @@ describe('ServiceContainer', function() {
     container.set('c', 3);
     container.alias('d', 'a');
 
-    expect(container.getServiceIds()).to.deep.equal(['a', 'b', 'c', 'd']);
+    expect(container.getServiceIds()).to.deep.equal(['service_container', 'a', 'b', 'c', 'd']);
   });
 
 

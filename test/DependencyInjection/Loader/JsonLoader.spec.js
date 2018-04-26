@@ -86,7 +86,7 @@ describe('JsonLoader', function() {
       class A {}
       const json = {
         service_a: {
-          constructor: A,
+          class: A,
         },
       };
 
@@ -107,7 +107,7 @@ describe('JsonLoader', function() {
       class A {}
       const json = {
         service_a: {
-          constructor: A,
+          class: A,
           autowire: false,
           args: [ 'a', 'b', 'c' ],
         },
@@ -134,7 +134,7 @@ describe('JsonLoader', function() {
       class A {}
       const json = {
         service_a: {
-          constructor: A,
+          class: A,
           autowire: false,
           args: [ 'a', '@service_b', 'c' ],
         },
@@ -159,11 +159,32 @@ describe('JsonLoader', function() {
       expect(setArguments.getCall(0).args[0][2]).to.equal('c');
     });
 
+    it('supports factories', function() {
+      function fac() {}
+      const json = {
+        service_a: {
+          factory: fac,
+        },
+      };
+
+      const spy = sinon.spy();
+      const container = {
+        registerFactory: spy,
+      };
+
+      const loader = new JsonLoader(container);
+
+      loader.load(json);
+
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.calledWith('service_a', fac)).to.be.true;
+    });
+
     it('can add tags', function() {
       class A {}
       const json = {
         service_a: {
-          constructor: A,
+          class: A,
           tags: [ 'foo', 'bar' ],
         },
       };
@@ -185,7 +206,9 @@ describe('JsonLoader', function() {
 
   describe('integration test', function() {
     it('works', function() {
-      class A {}
+      class A {
+        foo() { return 'bar'; }
+      }
       class B {
         woof() { return 'woof'; }
       }
@@ -201,15 +224,18 @@ describe('JsonLoader', function() {
         service_a: A,
         alias_a: '@service_a',
         service_b: {
-          constructor: B,
+          class: B,
           tags: [ 'bee' ],
         },
         service_c: {
-          constructor: C,
+          class: C,
           autowire: false,
           args: [ '@service_b' ]
         },
         service_d: D,
+        service_e: {
+          factory: () => new A(),
+        },
       };
 
 
@@ -220,6 +246,7 @@ describe('JsonLoader', function() {
       container.compile();
 
       expect(container.get('service_d').getC().getB().woof()).to.equal('woof');
+      expect(container.get('service_e').foo()).to.equal('bar');
     });
   });
 });
