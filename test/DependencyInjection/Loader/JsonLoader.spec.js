@@ -130,6 +130,32 @@ describe('JsonLoader', function() {
       expect(setArguments.calledWith(['a', 'b', 'c'])).to.be.true;
     });
 
+    it('defaults to no arguments when args is omitted', function() {
+      class A {}
+      const json = {
+        service_a: {
+          class: A,
+          autowire: false,
+        },
+      };
+
+      const setArguments = sinon.spy();
+      const definition = { setArguments };
+
+      const register = sinon.stub().returns(definition);
+      const container = { register };
+
+
+      const loader = new JsonLoader(container);
+
+      loader.load(json);
+
+      expect(register.calledOnce).to.be.true;
+      expect(register.calledWith('service_a', A)).to.be.true;
+      expect(setArguments.calledOnce).to.be.true;
+      expect(setArguments.calledWith([])).to.be.true;
+    });
+
     it('converts @ arguments to service references', function() {
       class A {}
       const json = {
