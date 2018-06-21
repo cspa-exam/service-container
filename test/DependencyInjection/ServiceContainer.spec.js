@@ -256,7 +256,7 @@ describe('ServiceContainer', function() {
       container.autowire('Bar', Bar);
       container.autowire('Baz', Baz);
 
-      expect(() => container.compile()).to.throw('ServiceContainer Error: Cyclical service dependency detected on (Foo -> Bar -> Baz -> Foo)');
+      expect(() => container.compile()).to.throw('ServiceContainer Error (Foo): Cyclical service dependency detected on (Foo -> Bar -> Baz -> Foo).');
     });
   });
 });
