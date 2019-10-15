@@ -440,3 +440,11 @@ container.get('express.server').start();
 This method requires significant re-thinking of how the application is laid out. The `service-container`'s 
 philosophy recommends this as the "ultimate goal". At this point, all aspects of your application are properly
 dependency-injected, and thus all aspects of your application can be isolated and tested!... probably. 
+
+## Developing
+
+```bash
+$ npm install
+$ npm run watch # In one terminal window
+$ npm test # In another
+```

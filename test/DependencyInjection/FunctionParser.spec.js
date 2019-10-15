@@ -1,7 +1,7 @@
 'use strict';
 
 const { expect } = require('chai');
-const FunctionParser = require('../../lib/DependencyInjection/FunctionParser');
+const { FunctionParser } = require('../../lib/DependencyInjection/FunctionParser');
 
 describe('FunctionParser', () => {
   describe('#parse', () => {

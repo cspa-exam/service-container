@@ -1,9 +1,11 @@
 {
   "name": "service-container",
-  "version": "1.0.5",
+  "version": "1.1.1",
   "description": "An inversion of control service container for Javascript",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch --incremental",
     "test": "mocha test --recursive",
     "tests": "mocha test --recursive"
   },
@@ -19,9 +21,13 @@
     "esprima": "^4.0.0"
   },
   "devDependencies": {
+    "@types/esprima": "^4.0.2",
+    "@types/node": "^12.7.12",
     "chai": "^4.1.2",
     "mocha": "^3.5.0",
     "mocha-parallel-tests": "^1.2.10",
-    "sinon": "^4.4.2"
+    "nodemon": "^1.19.3",
+    "sinon": "^4.4.2",
+    "typescript": "^3.6.4"
   }
 }

@@ -1,5 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+import { ServiceContainer } from "../ServiceContainer";
+import { FactoryFunction } from "../ServiceDefinition";
 /**
  * This form of container building loader simply is passed a function. The function must accept a single
  * argument that is the service container, and the function must do all the container configuration itself.
@@ -14,12 +14,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *    service_container.register( // ... );
  *  }
  */
-class FactoryLoader {
-    constructor(service_container) {
-        this.container = service_container;
-    }
-    load(factory_function) {
-        return factory_function(this.container);
-    }
+export declare class FactoryLoader {
+    container: ServiceContainer;
+    constructor(service_container: ServiceContainer);
+    load(factory_function: FactoryFunction): any;
 }
-exports.FactoryLoader = FactoryLoader;
